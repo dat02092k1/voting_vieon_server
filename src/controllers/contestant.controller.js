@@ -2,11 +2,11 @@
 
 const { asyncHandler } = require("../middleware/auth");
 const { CREATED, OK } = require("../core/success.response");
-const VotingService = require("../services/voting.service");
+const ContestantService = require("../services/contestant.service");
 
-class VotingController {
+class ContestantController {
     create = asyncHandler(async (req, res, next) => {
-        CREATED(res, 'create success', await VotingService.createVote(req.body))
+        CREATED(res, 'create success', await ContestantService.createVote(req.body))
     })
 
     getAll = asyncHandler(async (req, res, next) => {
@@ -26,4 +26,4 @@ class VotingController {
     })
 }
 
-module.exports = new VotingController();
+module.exports = new ContestantController();
