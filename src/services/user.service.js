@@ -26,6 +26,48 @@ class UserService {
         return user;
     }
 
+    static getAll = async () => {
+         return {
+            users: await User.find(),
+         }
+    }
+
+    static getUserById = async (userId) => {
+        const findUser = await User.findById(userId);
+
+        if (!findUser) throw new Api403Error('User not found');
+
+        return {
+            user: await User.findById(userId),
+        }
+    }
+
+    static update = async (userId, data) => {
+        const {user} = data;
+
+        const findUser = await User.findById(userId);
+
+        if (!findUser) throw new Api403Error('User not found');
+
+        await User.findByIdAndUpdate(userId, user, { new: true});
+
+        return {
+            user: await User.findById(userId),
+            message: 'updated'
+        }
+    }
+
+    static delete = async (userId) => {
+        const targetUser = await User.findById(userId);
+
+        if (!targetUser) throw new Api403Error('User not found');
+
+        await User.findByIdAndDelete(userId);
+
+        return {
+            message: 'deleted'
+        }
+    }
 }
 
 module.exports = UserService;
