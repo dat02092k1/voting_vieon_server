@@ -4,108 +4,58 @@ const mongoose = require('mongoose');
 
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const User = require('../models/user.model');
 
 const { Api403Error, BusinessLogicError, Api401Error } = require('../core/error.response');
+const {getInfoData} = require("../utils/utils");
 
 const RoleShop = {
-    SHOP: 'SHOP',
-    WRITTER: 'WRITTER',
-    EDITER: 'EDITER',
-    ADMIN: 'ADMIN'
+    STUDENT: "user",
+    ADMIN: "admin",
 }
 
 class AccessService {
-    /**
-     * 1) check email in db
-     * 2) check match password
-     * 3) create AT and RT then save
-     * 4) generate tokens
-     * 5) get data return
-     */
-    static login = async ({ email, password, refreshToken = null }) => {
+    static login = async ({ email, password }) => {
         console.log({ email });
         // 1.
-        const foundShop = await findByEmail({email});
+        const user = await User.findOne({email});
 
-        if (!foundShop) {
-            throw new Api403Error('Error: Shop not registered');
+        if (!user) {
+            throw new Api403Error('Error: User not registered');
         }
 
         // 2.
-        const match = bcrypt.compare(password, foundShop.password);
+        const match = bcrypt.compare(password, user.password);
 
         if (!match) throw new Api401Error('Authentication error');
 
-        // 3.
-        const { privateKey, publicKey } = generateKeys();
-        // 4. create access token and refresh token
-        const { _id: userId } = foundShop;
-
-        const tokens = await createTokenPair({
-            userId,
-            email
-        }, publicKey, privateKey);
-
-        await keyTokenService.createToken({
-            userId,
-            publicKey,
-            privateKey,
-            refreshToken: tokens.refreshToken,
-        })
-
         return {
             metadata: {
-                shop: getInfoData({ fields: ['_id', 'name', 'email'], object: foundShop }),
-                tokens
+                user: getInfoData({ fields: ['_id', 'votesRemaining', 'email'], object: user }),
             }
         }
 
     }
 
-    static signUp = async ({ name, email, password }) => {
+    static signUp = async ({  email, password }) => {
         // s1: check email existence
-        const hodelShop = await shopModel.findOne({ email }).lean(); // return JS object
+        const hodelUser = await User.findOne({ email }).lean(); // return JS object
 
-        if (hodelShop) {
-            throw new Api403Error('Error: Shop already exists');
+        if (hodelUser) {
+            throw new Api403Error('Error: user already exists');
         }
 
         const passwordHash = await bcrypt.hash(password, 10);
 
-        const newShop = await shopModel.create({
-            name, email, password: passwordHash, roles: [RoleShop.SHOP]
+        const newUser = await User.create({
+             email, password: passwordHash
         })
 
-        if (newShop) {
-            // create private key & public key
-            const { privateKey, publicKey } = generateKeys();
-
-            console.log(privateKey, '---', publicKey);
-
-            // save collection Keystore
-            const publicKeyString = await keyTokenService.createToken({
-                userId: newShop._id, publicKey, privateKey
-            });
-
-            if (!publicKeyString) {
-                throw new BusinessLogicError('Error: Create publicKeyString failed');
-            }
-
-            const publicKeyObject = crypto.createPublicKey(publicKeyString);
-
-            // create token pair
-            const tokens = await createTokenPair({
-                userId: newShop._id,
-                email
-            }, publicKeyObject, privateKey)
-
-            console.log(`creating token pair::`, tokens);
-
+        if (newUser) {
             return {
                 code: 201,
                 metadata: {
-                    shop: getInfoData({ fields: ['_id', 'name', 'email'], object: newShop }),
-                    tokens
+                    user: getInfoData({ fields: ['votesRemaining', 'email'], object: newUser }),
                 }
             }
         }
