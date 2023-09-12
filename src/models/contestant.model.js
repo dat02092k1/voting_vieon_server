@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const contestantSchema = new mongoose.Schema({
     name: String,
     votes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Vote' }],
@@ -6,5 +8,9 @@ const contestantSchema = new mongoose.Schema({
         required: true
     },
     description: String,
+    candicateId: {
+        type: String,
+        required: true
+    }
 });
 module.exports = mongoose.model('Contestant', contestantSchema);

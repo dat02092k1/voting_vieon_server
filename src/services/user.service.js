@@ -1,10 +1,7 @@
 'use strict';
 
-const mongoose = require('mongoose');
 const User = require('../models/user.model');
-
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const {Api403Error, BusinessLogicError, Api401Error} = require('../core/error.response');
 
 const SAL_ROUNDS = 10;

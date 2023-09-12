@@ -20,7 +20,8 @@ const userSchema = new mongoose.Schema({
         default: UtilContainer.roleUsers[0],
     },
     votesRemaining: { type: Number, default: 0 },  // in day
-    votes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Vote' }]
+    votes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Vote' }],
+    lastVoteDate: { type: Date },
 });
 
 module.exports = mongoose.model('User', userSchema);
