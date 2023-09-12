@@ -23,6 +23,9 @@ app.get('/', (req, res, next) => {
             metadata: strCompress }
     );
 })
+
+app.use('/', require('./routes/route'))
+
 // handle errors
 
 module.exports = app
