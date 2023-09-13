@@ -10,14 +10,14 @@ class VotingService {
     static createVote = async (data) => {
         const {candicateId, user} = data;
 
-        const targetUser = await User.findOne({'_id': user._id});
+        const targetUser = await User.findOne({'_id': user.userId});
 
         if (!targetUser) throw new Api403Error('User not found');
 
         const now = new Date();
-        const lastVoteDate = user.lastVoteDate || new Date(0);
+        const lastVoteDate = targetUser.lastVoteDate || new Date(0);
 
-        if (now - lastVoteDate < 24 * 60 * 60 * 1000 || user.votesRemaining < 1) {
+        if (now - lastVoteDate < 24 * 60 * 60 * 1000 || targetUser.votesRemaining < 1) {
             throw new Api403Error('You can vote only once a day.');
         }
         // if (user.isVIP) {
@@ -39,19 +39,20 @@ class VotingService {
         // Create a new vote document and save it
         const newVote = new Vote({
             contestant: rapper._id,
-            user: user._id,
+            user: user.userId,
         });
 
         await newVote.save();
 
-        user.votesRemaining--;
-        user.votes.push(newVote._id); // Add the vote to the user's votes array
-        user.lastVoteDate = now;
+        if (targetUser.votesRemaining > 0) targetUser.votesRemaining--;
 
-        await user.save();
+        targetUser.votes.push(newVote._id); // Add the vote to the user's votes array
+        targetUser.lastVoteDate = now;
+
+        await targetUser.save();
 
         rapper.votes.push(newVote._id); // Add the vote to the rapper's votes array
-        await raaper.save();
+        await rapper.save();
 
         return {
             message: 'Vote successfully',

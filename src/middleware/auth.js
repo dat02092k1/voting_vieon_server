@@ -1,10 +1,10 @@
 const { Api401Error, Api404Error } = require('../core/error.response');
 const jwt = require('jsonwebtoken');
 
-const asyncHandler = fn => {
-    return (req, res, next) => {
-        fn(req, res, next).catch(next);
-    }
+const asyncHandler = fn => (req, res, next) => {
+    return Promise
+        .resolve(fn(req, res, next))
+        .catch((err) => next(err));
 }
 
 const authentication = asyncHandler (async (req, res, next) => {
