@@ -10,19 +10,19 @@ class ContestantController {
     })
 
     getAll = asyncHandler(async (req, res, next) => {
-        OK(res, 'get user success', await UserService.getAll())
+        OK(res, 'get rappers success', await ContestantService.getAll())
     })
 
     getById = asyncHandler(async (req, res, next) => {
-        OK(res, 'get user by id', await UserService.getUserById(req.params.id))
+        OK(res, 'get rapper by id', await ContestantService.getById(req.params.id))
     })
 
     update = asyncHandler(async (req, res, next) => {
-        OK(res, 'user updated', await UserService.update(req.params.id, req.body))
+        OK(res, 'rapper information updated', await ContestantService.update(req.query, req.body))
     })
 
     delete = asyncHandler(async (req, res, next) => {
-        OK(res, 'user deleted', await UserService.delete(req.params.id))
+        OK(res, 'rapper deleted', await ContestantService.delete(req.query, req.body))
     })
 }
 

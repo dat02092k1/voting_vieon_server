@@ -20,13 +20,62 @@ class ContestantService {
 
         return {
             message: 'Rapper created',
-            rapper: getInfoData({ fields: ['candicateId', 'name', 'imgUrl'], object: newRapper })
+            rapper: getInfoData({fields: ['candicateId', 'name', 'imgUrl'], object: newRapper})
         }
     }
 
     static getAll = async () => {
         return {
-            users: await User.find(),
+            rappers: await Constestant.find(),
+        }
+    }
+
+    static getById = async (candicateId) => {
+        const targetRapper = await Constestant.findOne({'candicateId': candicateId});
+
+        if (!targetRapper) throw new Api403Error('Cant found rapper with this candicate id');
+
+        return {
+            rapper: getInfoData({fields: ['candicateId', 'name', 'imgUrl'], object: targetRapper})
+        }
+    }
+
+    static delete = async (query) => {
+        const {candicateId} = query;
+
+        const targetRapper = await Constestant.findOne({'candicateId': candicateId});
+
+        if (!targetRapper) throw new Api403Error('Cant found rapper with this candicate id');
+
+        await targetRapper.deleteOne({'candicateId': candicateId});
+
+        return {
+            rapper: getInfoData({fields: ['candicateId', 'name', 'imgUrl'], object: targetRapper})
+        }
+    }
+
+    static update = async (query, data) => {
+        const {candicateId} = query;
+        const {rapper} = data;
+        console.log(rapper);
+        const targetRapper = await Constestant.findOne({'candicateId': candicateId});
+
+        if (!targetRapper) throw new Api403Error('Cant found rapper with this candicate id');
+
+        if (rapper.name) {
+            targetRapper.name = rapper.name;
+        }
+        if (rapper.description) {
+            targetRapper.description = rapper.description;
+        }
+        if (rapper.candicate_id) {
+            targetRapper.candicateId = rapper.candicate_id;
+        }
+
+        await targetRapper.save();
+
+        return {
+            rapper: getInfoData({fields: ['candicateId', 'name', 'imgUrl'], object: targetRapper})
         }
     }
 }
