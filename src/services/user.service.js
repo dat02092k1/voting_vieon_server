@@ -3,6 +3,8 @@
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const {Api403Error, BusinessLogicError, Api401Error} = require('../core/error.response');
+const _ = require("lodash");
+const {getInfoData} = require("../utils/utils");
 
 const SAL_ROUNDS = 10;
 
@@ -41,15 +43,16 @@ class UserService {
 
     static update = async (userId, data) => {
         const {user} = data;
-
-        const findUser = await User.findById(userId);
+        console.log(user);
+        var findUser = await User.findById(userId);
 
         if (!findUser) throw new Api403Error('User not found');
 
-        await User.findByIdAndUpdate(userId, user, { new: true});
-
+        findUser = _.extend(findUser, user);
+        // await User.findByIdAndUpdate(userId, user, { new: true});
+        await findUser.save();
         return {
-            user: await User.findById(userId),
+            user: getInfoData({fields: ['_id', 'votesRemaining', 'email'], object: findUser}),
             message: 'updated'
         }
     }
