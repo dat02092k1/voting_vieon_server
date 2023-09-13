@@ -32,4 +32,7 @@ app.use(is404Handler)
 app.use(logErrorMiddleware)
 app.use(returnError)
 
+// init cron job
+const task = require('./task/reset_vote');
+task.resetVote();
 module.exports = app
