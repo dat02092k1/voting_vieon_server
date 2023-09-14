@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const User = require('../models/user.model');
 
 const { Api403Error, BusinessLogicError, Api401Error } = require('../core/error.response');
-const {getInfoData} = require("../utils/utils");
+const {getInfoData, generateAccessToken} = require("../utils/utils");
 
 const RoleShop = {
     STUDENT: "user",
@@ -32,6 +32,7 @@ class AccessService {
         return {
             metadata: {
                 user: getInfoData({ fields: ['_id', 'votesRemaining', 'email'], object: user }),
+                token: generateAccessToken(user)
             }
         }
 
