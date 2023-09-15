@@ -22,7 +22,7 @@ class AccessController {
         // );
     })
     logout = asyncHandler(async (req, res, next) => {
-        OK(res, 'Logout success', await AccessService.logout(req.keyStore))
+        OK(res, 'Logout success', await AccessService.logout())
     })
 }
 

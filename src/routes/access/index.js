@@ -1,8 +1,8 @@
 'use strict';
 
 const express = require('express');
-const { asyncHandler } = require('../../middleware/auth');
 const { authentication } = require('../../middleware/auth');
+const { verifyToken } = require('../../middleware/verify');
 const accessController = require('../../controllers/access.controller');
 
 const router = express.Router();
@@ -15,6 +15,6 @@ router.post('/user/login', (accessController.login));
 // authentication
 router.use(authentication);
 // logout
-router.post('/user/logout', (accessController.logout));
+router.post('/user/logout', verifyToken, (accessController.logout));
 
 module.exports = router;

@@ -67,11 +67,8 @@ class AccessService {
         }
     }
 
-    static logout = async (keyStore) => {
-        console.log(keyStore);
-        const delKey = await keyTokenService.removeKeyById(keyStore._id);
-        console.log(delKey);
-        return delKey;
+    static logout = async () => {
+        return 'logout';
     }
 }
 
