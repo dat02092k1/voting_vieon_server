@@ -9,7 +9,7 @@ class VotingService {
     static createVote = async (data) => {
         const {candicateId, user} = data;
 
-        const targetUser = await User.findOne({'_id': user.userId});
+        const targetUser = await User.findOne({'_id': user._id});
 
         if (!targetUser) throw new Api403Error('User not found');
 
