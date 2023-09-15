@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const { authentication } = require('../../middleware/auth');
+const verifyMiddileware = require('../../middleware/verify');
 const { verifyToken } = require('../../middleware/verify');
 const accessController = require('../../controllers/access.controller');
 
@@ -13,8 +13,8 @@ router.post('/user/signUp', (accessController.signUp));
 router.post('/user/login', (accessController.login));
 
 // authentication
-router.use(authentication);
+router.use(verifyMiddileware.authentication);
 // logout
-router.post('/user/logout', verifyToken, (accessController.logout));
+router.post('/user/logout', verifyMiddileware.verifyToken, (accessController.logout));
 
 module.exports = router;
