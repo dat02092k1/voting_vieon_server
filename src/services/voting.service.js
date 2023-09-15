@@ -27,7 +27,7 @@ class VotingService {
         // Create a new vote document and save it
         const newVote = new Vote({
             contestant: rapper._id,
-            user: user.userId,
+            user: user._id,
         });
 
         await newVote.save();
