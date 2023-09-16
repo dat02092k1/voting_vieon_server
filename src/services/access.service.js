@@ -21,7 +21,7 @@ class AccessService {
         const user = await User.findOne({email});
 
         if (!user) {
-            throw new Api403Error('Error: User not registered');
+            throw new Api401Error('Error: User not registered');
         }
 
         // 2.
@@ -42,6 +42,7 @@ class AccessService {
         // s1: check email existence
         const hodelUser = await User.findOne({ email }).lean(); // return JS object
 
+        console.log(hodelUser);
         if (hodelUser) {
             throw new Api403Error('Error: user already exists');
         }
@@ -49,14 +50,15 @@ class AccessService {
         const passwordHash = await bcrypt.hash(password, 10);
 
         const newUser = await User.create({
-             email, password: passwordHash
+             email, password: passwordHash, votesRemaining: 1
         })
 
         if (newUser) {
             return {
                 code: 201,
                 metadata: {
-                    user: getInfoData({ fields: ['votesRemaining', 'email'], object: newUser }),
+                    user: getInfoData({ fields: ['_id', 'votesRemaining', 'email'], object: newUser }),
+                    token: generateAccessToken(newUser)
                 }
             }
         }

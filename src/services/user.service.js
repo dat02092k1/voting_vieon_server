@@ -32,12 +32,12 @@ class UserService {
     }
 
     static getUserById = async (userId) => {
-        const findUser = await User.findById(userId);
+        const findUser = await User.findById(userId).lean();
 
         if (!findUser) throw new Api403Error('User not found');
 
         return {
-            user: await User.findById(userId),
+            user: findUser,
         }
     }
 
@@ -58,7 +58,7 @@ class UserService {
     }
 
     static delete = async (userId) => {
-        const targetUser = await User.findById(userId);
+        const targetUser = await User.findById(userId).lean();
 
         if (!targetUser) throw new Api403Error('User not found');
 
