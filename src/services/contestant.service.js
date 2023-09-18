@@ -25,8 +25,11 @@ class ContestantService {
     }
 
     static getAll = async () => {
+        const rappers = await Constestant.find();
         return {
-            rappers: await Constestant.find(),
+            result: {
+                rappers: rappers.map(rapper => getInfoData({fields: ['candicateId', 'name', 'imgUrl', 'description'], object: rapper}))
+            }
         }
     }
 
