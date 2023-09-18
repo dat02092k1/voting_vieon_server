@@ -11,6 +11,7 @@ const seeding = async () => {
             email: faker.internet.email(),
             password: faker.internet.password(),
             lastVoteDate: faker.date.past(),
+            votesRemaining: 1
         })
     }
 
