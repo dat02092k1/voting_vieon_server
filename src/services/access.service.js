@@ -8,6 +8,7 @@ const User = require('../models/user.model');
 
 const { Api403Error, BusinessLogicError, Api401Error } = require('../core/error.response');
 const {getInfoData, generateAccessToken} = require("../utils/utils");
+const UtilContainer = require("../shared/constants");
 
 const RoleShop = {
     STUDENT: "user",
@@ -28,6 +29,15 @@ class AccessService {
         const match = bcrypt.compare(password, user.password);
 
         if (!match) throw new Api401Error('Authentication error');
+
+        if (user.role === UtilContainer.roleUsers[1]) {
+            return {
+                metadata: {
+                    user: getInfoData({ fields: ['_id', 'votesRemaining', 'email', 'role'], object: user }),
+                    token: generateAccessToken(user)
+                }
+            }
+        }
 
         return {
             metadata: {

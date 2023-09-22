@@ -1,10 +1,10 @@
 "use strict";
 
 const mongoose = require("mongoose");
-const { database: {host, name, password}} = require('../configs/config.mongodb.js');
-// const connectString = `mongodb://${host}:${port}/${name}`;
-const proConnectString = `mongodb+srv://${host}:${password}@${name}.mzollsw.mongodb.net/`;
-console.log(proConnectString);
+const { db: {host, name, port}} = require('../configs/config.mongodb.js');
+const connectString = `mongodb://${host}:${port}/${name}`;
+// const proConnectString = `mongodb+srv://${host}:${password}@${name}.mzollsw.mongodb.net/`;
+// console.log(proConnectString);
 class Database {
     constructor() {
         this.connect()
@@ -17,7 +17,7 @@ class Database {
             mongoose.set('debug', { color: true });
         }
 
-        mongoose.connect(proConnectString, {
+        mongoose.connect(connectString, {
             maxPoolSize: 50
         })
             .then((_) => console.log("DB connected"))
