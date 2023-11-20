@@ -28,7 +28,7 @@ class ContestantService {
         const rappers = await Constestant.find();
         return {
             result: {
-                rappers: rappers.map(rapper => getInfoData({fields: ['candicateId', 'name', 'imgUrl', 'description'], object: rapper}))
+                rappers: rappers.map(rapper => getInfoData({fields: ['candicateId', 'votes', 'name', 'imgUrl', 'description'], object: rapper}))
             }
         }
     }
